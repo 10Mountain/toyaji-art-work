@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>toyaji ART WORK | Portfolio & Commercial Design</title>
+  <meta name="description" content="イラストレーター・デザイナー toyaji の公式ポートフォリオサイト。デジタルイラスト、アナログイラスト、ロゴ、落書きスケッチの作品集とご依頼案内。">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Decorative Ambient Glows & Grid Pattern -->
+  <div class="bg-ambient-glow glow-1"></div>
+  <div class="bg-ambient-glow glow-2"></div>
+  <div class="bg-grid-pattern"></div>
+
+  <!-- Header Navbar -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo">
+        <span class="brand-name">toyaji</span>
+        <span class="brand-tag">ART WORK</span>
+      </a>
+      
+      <nav class="nav-menu" id="navMenu">
+        <a href="#works" class="nav-link active">WORKS</a>
+        <a href="#services" class="nav-link">SERVICES</a>
+        <a href="#about" class="nav-link">ABOUT</a>
+        <a href="#contact" class="nav-link btn-nav-cta">制作のご依頼</a>
+        <a href="https://note.com/10mountain" target="_blank" rel="noopener noreferrer" class="nav-link btn-nav-blog" title="10Mountainの中の人 / toyaji｜note">
+          <i class="fa-solid fa-pen-nib"></i> ブログ <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75em; margin-left: 2px;"></i>
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Theme Toggle Button -->
+        <button class="btn-theme-toggle" id="themeToggleBtn" title="ダーク / ライト テーマ切り替え" aria-label="Toggle Theme">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+        <!-- Artwork Manager Trigger (Hidden from general visitors, accessible via secret commands) -->
+        <button class="btn-manage" id="openManagerBtn" title="作品の追加・管理" style="display: none;">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span>作品追加・管理</span>
+        </button>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span> Official Portfolio & Creative Studio
+      </div>
+      <h1 class="hero-title">
+        toyaji <span class="highlight-text">ART WORK</span>
+      </h1>
+      <p class="hero-subtitle">
+        デジタルイラスト、アナログ手描き表現、ロゴデザイン、落書きスケッチ。<br>
+        雑食と呼ばれる世界観で、ご要望に合わせたビジュアルを制作いたします。
+      </p>
+      
+      <div class="hero-buttons">
+        <a href="#works" class="btn btn-primary">
+          作品を見る <i class="fa-solid fa-arrow-down"></i>
+        </a>
+      </div>
+
+      <!-- Quick Category Pills in Hero -->
+      <div class="hero-categories">
+        <span class="cat-label">CATEGORIES :</span>
+        <button class="hero-cat-btn" data-filter="digital">デジタルイラスト</button>
+        <button class="hero-cat-btn" data-filter="analog">アナログイラスト</button>
+        <button class="hero-cat-btn" data-filter="design">デザイン</button>
+        <button class="hero-cat-btn" data-filter="logo">ロゴ</button>
+        <button class="hero-cat-btn" data-filter="doodle">落書き</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Works Gallery Section -->
+  <section class="works-section" id="works">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-sub">PORTFOLIO</span>
+          <h2 class="section-title">WORKS GALLERY</h2>
+        </div>
+        <p class="section-desc">
+          カテゴリー別に作品をご覧いただけます。カードをクリックすると詳細情報が表示されます。
+        </p>
+      </div>
+
+      <!-- Works Search & Filter Controls -->
+      <div class="works-controls-bar">
+        <div class="search-box-wrap">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="worksSearchInput" placeholder="作品タイトル、使用ツール、キーワードで検索..." class="search-input">
+          <button type="button" class="search-clear-btn hidden" id="searchClearBtn" title="検索解除">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-btn active" data-filter="all">
+          <i class="fa-solid fa-border-all"></i> すべて <span class="count-badge" id="countAll">0</span>
+        </button>
+        <button class="filter-btn" data-filter="digital">
+          <i class="fa-solid fa-desktop"></i> デジタルイラスト <span class="count-badge" id="countDigital">0</span>
+        </button>
+        <button class="filter-btn" data-filter="analog">
+          <i class="fa-solid fa-paint-brush"></i> アナログイラスト <span class="count-badge" id="countAnalog">0</span>
+        </button>
+        <button class="filter-btn" data-filter="design">
+          <i class="fa-solid fa-swatchbook"></i> デザイン <span class="count-badge" id="countDesign">0</span>
+        </button>
+        <button class="filter-btn" data-filter="logo">
+          <i class="fa-solid fa-bezier-curve"></i> ロゴ <span class="count-badge" id="countLogo">0</span>
+        </button>
+        <button class="filter-btn" data-filter="doodle">
+          <i class="fa-solid fa-pen-nib"></i> 落書き <span class="count-badge" id="countDoodle">0</span>
+        </button>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div class="works-grid" id="worksGrid">
+        <!-- Rendered dynamically by main.js -->
+      </div>
+
+      <!-- Empty State / No Works Message -->
+      <div class="empty-state hidden" id="emptyState">
+        <i class="fa-regular fa-folder-open empty-icon"></i>
+        <p>該当する作品がまだありません。</p>
+        <button class="btn btn-outline" id="emptyUploadBtn">作品を追加する</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="services-section" id="services">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-sub">COMMISSION & SERVICES</span>
+        <h2 class="section-title">制作サービスとご依頼案内</h2>
+        <p class="section-desc">
+          商用イラスト・ロゴ・個人のご依頼まで幅広く対応しております。お気軽にお問い合わせください。
+        </p>
+      </div>
+
+      <div class="services-grid">
+        <!-- Service Card 1 -->
+        <div class="service-card">
+          <div class="service-icon"><i class="fa-solid fa-laptop-code"></i></div>
+          <span class="service-tag">デジタルイラスト</span>
+          <h3>キービジュアル / メインイラスト</h3>
+          <p>ゲーム・書籍・WEBサイト・CDジャケット等の高品質なデジタルビジュアル制作。</p>
+        </div>
+
+        <!-- Service Card 2 -->
+        <div class="service-card">
+          <div class="service-icon"><i class="fa-solid fa-palette"></i></div>
+          <span class="service-tag">アナログイラスト</span>
+          <h3>手描き絵画 / 原画制作</h3>
+          <p>透明水彩、インク、ペン、アクリル等による温かみと質感のある手描きの原画制作。</p>
+        </div>
+
+        <!-- Service Card 3 -->
+        <div class="service-card">
+          <div class="service-icon"><i class="fa-solid fa-shapes"></i></div>
+          <span class="service-tag">ロゴデザイン</span>
+          <h3>シンボルマーク / ブランディング</h3>
+          <p>個人・企業・VTuber・作品タイトルのオリジナリティ溢れるロゴ＆タイポグラフィ制作。</p>
+        </div>
+
+        <!-- Service Card 4 -->
+        <div class="service-card">
+          <div class="service-icon"><i class="fa-solid fa-pencil"></i></div>
+          <span class="service-tag">落書き・コンセプト</span>
+          <h3>スケッチ / アイデア・キャラ案</h3>
+          <p>スピーディーなコンセプトアート、アイデアスケッチ、初期デザイン案の制作。</p>
+        </div>
+      </div>
+
+      <!-- Commission Process Banner -->
+      <div class="process-banner">
+        <h3 class="process-title">ご依頼の流れ</h3>
+        <div class="process-steps">
+          <div class="step-item">
+            <span class="step-num">01</span>
+            <h4>お問い合わせ</h4>
+            <p>フォームよりご相談内容・概要・スケジュール感をお送りください。</p>
+          </div>
+          <div class="step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="step-item">
+            <span class="step-num">02</span>
+            <h4>ヒアリング・内容決定</h4>
+            <p>表現方針や用途、制作詳細について擦り合わせを行います。</p>
+          </div>
+          <div class="step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="step-item">
+            <span class="step-num">03</span>
+            <h4>ラフ制作・確認</h4>
+            <p>構図やイメージの確認修正を行います。</p>
+          </div>
+          <div class="step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+          <div class="step-item">
+            <span class="step-num">04</span>
+            <h4>本制作・納品</h4>
+            <p>完成データ（または原画）を納品いたします。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section" id="about">
+    <div class="container about-container">
+      <div class="about-content">
+        <span class="section-sub">ABOUT CREATOR</span>
+        <h2 class="about-name">toyaji</h2>
+        <p class="about-role">Illustrator & Visual Designer</p>
+
+        <p class="about-bio">
+          toyaji ART WORKをご覧いただきありがとうございます。<br>
+          デジタルイラスト、アナログイラスト、ロゴ作成、その他あらゆるグラフィック作品に対応します。
+        </p>
+
+        <div class="about-skills">
+          <div class="skill-group">
+            <h4><i class="fa-solid fa-screwdriver-wrench"></i> 使用ツール / 使用画材</h4>
+            <div class="tags-cloud">
+              <span class="tag-pill">CLIP STUDIO PAINT</span>
+              <span class="tag-pill">Adobe Illustrator</span>
+              <span class="tag-pill">Adobe Photoshop</span>
+              <span class="tag-pill">筆、水彩</span>
+              <span class="tag-pill">ミリペン</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-socials">
+          <a href="https://www.instagram.com/toyaji_creation/" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram (toyaji_creation)">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="https://note.com/10mountain" target="_blank" rel="noopener noreferrer" class="social-icon" title="note (10Mountainの中の人 / toyaji)">
+            <i class="fa-solid fa-pen-nib"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="about-card">
+        <div class="card-inner">
+          <div class="card-avatar">
+            <img src="images/profile.jpg" alt="toyaji" class="avatar-img">
+          </div>
+          <h3>toyaji</h3>
+          <p class="card-tagline">雑食クリエイター</p>
+          <div class="card-stats">
+            <div class="stat-box">
+              <span class="stat-number">4</span>
+              <span class="stat-label">Categories</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number">Commercial</span>
+              <span class="stat-label">& Private</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact / Work Request Section -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-sub">CONTACT & WORK REQUEST</span>
+        <h2 class="section-title">制作のご依頼・お問い合わせ</h2>
+        <p class="section-desc">
+          お仕事のご相談や表現に関するアイデア、ご質問など、お気軽にお問い合わせフォームよりご連絡ください。<br>
+          直接のご連絡は <a href="mailto:support@toyaji-art-work.com" class="direct-email-link"><i class="fa-regular fa-envelope"></i> support@toyaji-art-work.com</a> でも受け付けております。
+        </p>
+        <div class="direct-email-box">
+          <span class="email-address"><i class="fa-solid fa-paper-plane"></i> support@toyaji-art-work.com</span>
+          <button type="button" class="btn-copy-email" id="copyEmailBtn" title="メールアドレスをコピー">
+            <i class="fa-regular fa-copy"></i> アドレスをコピー
+          </button>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <form id="contactForm" class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactName">お名前 / 貴社名 <span class="required">*</span></label>
+              <input type="text" id="contactName" name="name" placeholder="例: 山田 太郎 / 株式会社〇〇" required>
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">メールアドレス <span class="required">*</span></label>
+              <input type="email" id="contactEmail" name="email" placeholder="example@domain.com" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="contactCategory">ご希望の作品カテゴリー <span class="required">*</span></label>
+            <select id="contactCategory" name="category" required>
+              <option value="" disabled selected>選択してください</option>
+              <option value="digital">デジタルイラスト</option>
+              <option value="analog">アナログイラスト</option>
+              <option value="design">デザイン (グッズ・Tシャツ・パッケージ等)</option>
+              <option value="logo">ロゴデザイン</option>
+              <option value="doodle">落書き・アイデアスケッチ</option>
+              <option value="other">その他・自由なご相談</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="contactDeadline">希望納品時期</label>
+            <input type="text" id="contactDeadline" name="deadline" placeholder="例: 2026年9月末頃、急ぎ相談など">
+          </div>
+
+          <div class="form-group">
+            <label for="contactMessage">ご依頼内容・詳細 <span class="required">*</span></label>
+            <textarea id="contactMessage" name="message" rows="5" placeholder="用途、サイズ、キャラクター設定、イメージなど、わかる範囲でご記入ください。" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-submit">
+            送信する <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <a href="#" class="brand-logo">
+          <span class="brand-name">toyaji</span>
+          <span class="brand-tag">art work</span>
+        </a>
+        <p>© 2026 toyaji ART WORK. All Rights Reserved. 
+          <a href="https://note.com/10mountain" target="_blank" rel="noopener noreferrer" class="footer-blog-link">
+            <i class="fa-solid fa-pen-nib"></i> noteブログ
+          </a>
+          <button class="btn-admin-login-link" id="openAdminAuthBtn" title="管理者ログイン" style="display: none;"><i class="fa-solid fa-lock"></i> <span>管理者ログイン / 作品追加</span></button>
+        </p>
+      </div>
+      <a href="#" class="btn-top" id="scrollTopBtn" title="Back to Top">
+        <i class="fa-solid fa-arrow-up"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- Lightbox Artwork Detail Modal -->
+  <div class="modal-overlay hidden" id="detailModal">
+    <div class="modal-content artwork-modal">
+      <button class="modal-close" id="closeDetailModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-body artwork-modal-body">
+        <div class="modal-image-wrap">
+          <img src="" id="modalImg" alt="Artwork detail" class="modal-img">
+        </div>
+        <div class="modal-info">
+          <div class="modal-header-info">
+            <span class="modal-category" id="modalCategory">デジタルイラスト</span>
+            <span class="modal-year" id="modalYear">2026</span>
+          </div>
+          <h2 class="modal-title" id="modalTitle">作品タイトル</h2>
+          <div class="modal-meta-grid">
+            <div class="meta-item">
+              <span class="meta-label"><i class="fa-solid fa-user-tag"></i> クライアント / 用途</span>
+              <span class="meta-val" id="modalClient">自主制作</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label"><i class="fa-solid fa-wrench"></i> 使用ツール / 画材</span>
+              <span class="meta-val" id="modalTools">CLIP STUDIO PAINT</span>
+            </div>
+          </div>
+          <p class="modal-desc" id="modalDesc">作品の詳細説明がここに入ります。</p>
+
+          <div class="modal-cta-wrap">
+            <a href="#contact" class="btn btn-primary btn-modal-contact" id="modalInquireBtn">
+              この作風で制作を相談する <i class="fa-solid fa-envelope"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Artwork Manager / Uploader Modal (管理者・簡単作品追加ツール) -->
+  <div class="modal-overlay hidden" id="managerModal">
+    <div class="modal-content manager-modal">
+      <button class="modal-close" id="closeManagerModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-cloud-arrow-up"></i> 作品追加・更新ツール (toyaji専用)</h2>
+        <p>画像をアップロード、または画像URLを入力して作品を登録できます。追加した作品はサイトに即時反映されます。</p>
+      </div>
+
+      <div class="modal-body manager-modal-body">
+        <form id="addWorkForm" class="add-work-form">
+          
+          <!-- Image Input (File or URL) -->
+          <div class="form-group">
+            <label>作品画像 <span class="required">*</span></label>
+            <div class="upload-dropzone" id="dropZone">
+              <i class="fa-solid fa-image upload-icon"></i>
+              <p>ここに画像をドラッグ＆ドロップ または <span class="file-browse-link">ファイルを選択</span></p>
+              <input type="file" id="fileInput" accept="image/*" class="file-input-hidden">
+            </div>
+            <div class="url-divider"><span>または画像URLを直接入力</span></div>
+            <input type="text" id="workImageUrl" placeholder="例: images/my-work.jpg または 画像URL">
+            <div class="img-preview-box hidden" id="imgPreviewBox">
+              <img id="uploadPreviewImg" src="" alt="Preview">
+              <span class="preview-badge">プレビュー確認中</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="workTitle">作品タイトル <span class="required">*</span></label>
+              <input type="text" id="workTitle" placeholder="例: SUMMER ILLUST 2026" required>
+            </div>
+            <div class="form-group">
+              <label for="workCategory">カテゴリー <span class="required">*</span></label>
+              <select id="workCategory" required>
+                <option value="digital">デジタルイラスト</option>
+                <option value="analog">アナログイラスト</option>
+                <option value="design">デザイン</option>
+                <option value="logo">ロゴ</option>
+                <option value="doodle">落書き</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="workClient">クライアント / 用途</label>
+              <input type="text" id="workClient" placeholder="例: 自主制作、書籍装画、個人観賞用など">
+            </div>
+            <div class="form-group">
+              <label for="workTools">使用ツール / 画材</label>
+              <input type="text" id="workTools" placeholder="例: CLIP STUDIO PAINT / 透明水彩など">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="workYear">制作年</label>
+              <input type="text" id="workYear" value="2026">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="workDesc">作品の説明・解説</label>
+            <textarea id="workDesc" rows="3" placeholder="作品のコンセプトや工夫した点などを入力できます。"></textarea>
+          </div>
+
+          <div class="manager-actions">
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-plus"></i> 作品を追加して即時反映
+            </button>
+            <button type="button" class="btn btn-outline" id="exportJsonBtn">
+              <i class="fa-solid fa-download"></i> works.json を書き出す
+            </button>
+            <button type="button" class="btn btn-text-danger" id="resetWorksBtn">
+              初期状態に戻す
+            </button>
+          </div>
+        </form>
+
+        <!-- Current Registered Works List Manager -->
+        <div class="registered-works-wrap">
+          <div class="registered-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <h3 style="margin-bottom: 0;">登録中の作品一覧 (<span id="registeredCount">0</span>件)</h3>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <input type="text" id="managerSearchInput" placeholder="キーワードで作品を絞り込み..." style="padding: 6px 12px; border-radius: var(--radius-full); border: 1px solid var(--border-color); font-size: 0.85rem; width: 220px; background: var(--bg-primary); color: var(--text-main);">
+              <button type="button" class="btn btn-outline" id="autoSortByYearBtn" style="font-size: 0.8rem; padding: 6px 12px;" title="制作年数が新しい順（2026年〜）に一括並べ替えます">
+                <i class="fa-solid fa-arrow-down-9-1"></i> 制作年順にソート
+              </button>
+            </div>
+          </div>
+
+          <!-- Manager Category Filter Tabs -->
+          <div class="manager-category-filter" id="managerCategoryFilter" style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+            <button type="button" class="filter-btn btn-sm active" data-manager-filter="all">
+              <i class="fa-solid fa-border-all"></i> すべて
+            </button>
+            <button type="button" class="filter-btn btn-sm" data-manager-filter="digital">
+              <i class="fa-solid fa-desktop"></i> デジタルイラスト
+            </button>
+            <button type="button" class="filter-btn btn-sm" data-manager-filter="analog">
+              <i class="fa-solid fa-paint-brush"></i> アナログイラスト
+            </button>
+            <button type="button" class="filter-btn btn-sm" data-manager-filter="design">
+              <i class="fa-solid fa-swatchbook"></i> デザイン
+            </button>
+            <button type="button" class="filter-btn btn-sm" data-manager-filter="logo">
+              <i class="fa-solid fa-bezier-curve"></i> ロゴ
+            </button>
+            <button type="button" class="filter-btn btn-sm" data-manager-filter="doodle">
+              <i class="fa-solid fa-pen-nib"></i> 落書き
+            </button>
+          </div>
+
+          <div style="font-size: 0.75rem; color: var(--text-light); margin-bottom: 12px;">
+            <i class="fa-solid fa-hand"></i> カテゴリーを選択して画面内のボタン（▲ / ▼ / Top / Bottom）またはドラッグ＆ドロップで選択中カテゴリー内の並び順を自由に変更できます。
+          </div>
+          <div class="registered-list" id="registeredList">
+            <!-- Dynamically generated list -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Artwork Modal -->
+  <div class="modal-overlay hidden" id="editWorkModal">
+    <div class="modal-content manager-modal">
+      <button class="modal-close" id="closeEditWorkModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-pen-to-square"></i> 作品情報・キャプションの編集</h2>
+        <p>タイトル、カテゴリー、制作ツール、作品説明（キャプション）を変更できます。</p>
+      </div>
+
+      <div class="modal-body manager-modal-body">
+        <form id="editWorkForm" class="add-work-form">
+          <input type="hidden" id="editWorkIndex">
+          
+          <!-- Image Input & Preview for Edit -->
+          <div class="form-group">
+            <label>作品画像 <span class="sub-label">（差し替える場合のみ選択・変更してください）</span></label>
+            <div class="img-preview-box" id="editImgPreviewBox" style="margin-bottom: 12px;">
+              <img id="editPreviewImg" src="" alt="Current Image" style="max-height: 180px; object-fit: contain;">
+              <span class="preview-badge" id="editPreviewBadge">現在の登録画像</span>
+            </div>
+            <div class="upload-dropzone" id="editDropZone">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+              <p>新しい画像をドラッグ＆ドロップ または <span class="file-browse-link">ファイルを選択して差し替え</span></p>
+              <input type="file" id="editFileInput" accept="image/*" class="file-input-hidden">
+            </div>
+            <div class="url-divider"><span>または新しい画像URL/パスを入力</span></div>
+            <input type="text" id="editWorkImageUrl" placeholder="例: images/new-art.jpg または 画像URL">
+          </div>
+
+          <div class="form-group">
+            <label for="editWorkTitle">作品タイトル <span class="required">*</span></label>
+            <input type="text" id="editWorkTitle" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editWorkCategory">カテゴリー <span class="required">*</span></label>
+              <select id="editWorkCategory" required>
+                <option value="digital">デジタルイラスト</option>
+                <option value="analog">アナログイラスト</option>
+                <option value="design">デザイン</option>
+                <option value="logo">ロゴ</option>
+                <option value="doodle">落書き</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editWorkYear">制作年</label>
+              <input type="text" id="editWorkYear">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editWorkClient">クライアント / 用途</label>
+              <input type="text" id="editWorkClient">
+            </div>
+            <div class="form-group">
+              <label for="editWorkTools">使用ツール / 画材</label>
+              <input type="text" id="editWorkTools">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editWorkDesc">作品の説明・キャプション</label>
+            <textarea id="editWorkDesc" rows="4" placeholder="作品の背景、世界観、キャラクター説明などのキャプションを入力できます。"></textarea>
+          </div>
+
+          <div class="manager-actions">
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-floppy-disk"></i> 変更を保存する
+            </button>
+            <button type="button" class="btn btn-outline" id="closeEditWorkBtn">
+              キャンセル
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Authentication Password Modal -->
+  <div class="modal-overlay hidden" id="adminAuthModal">
+    <div class="modal-content auth-modal">
+      <button class="modal-close" id="closeAdminAuthModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-header text-center">
+        <h2><i class="fa-solid fa-user-shield"></i> 管理者認証 (toyaji専用)</h2>
+        <p>作品の追加・管理を行うにはパスワードを入力してください。</p>
+      </div>
+      <div class="modal-body">
+        <form id="adminAuthForm" class="auth-form">
+          <div class="form-group">
+            <label for="adminPassword">パスワード</label>
+            <input type="password" id="adminPassword" placeholder="パスワードを入力..." required autocomplete="current-password">
+            <p class="auth-error-msg hidden" id="authErrorMsg"><i class="fa-solid fa-triangle-exclamation"></i> パスワードが違います</p>
+          </div>
+          <div class="auth-actions">
+            <button type="submit" class="btn btn-primary btn-full">
+              管理者としてログイン <i class="fa-solid fa-right-to-bracket"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast hidden" id="toast">
+    <i class="fa-solid fa-check-circle toast-icon"></i>
+    <span class="toast-message" id="toastMsg">通知メッセージ</span>
+  </div>
+
+  <!-- Main JavaScript File -->
+  <script src="main.js"></script>
+</body>
+</html>
