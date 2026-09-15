@@ -295,10 +295,10 @@
         <h2 class="section-title">制作のご依頼・お問い合わせ</h2>
         <p class="section-desc">
           お仕事のご相談や表現に関するアイデア、ご質問など、お気軽にお問い合わせフォームよりご連絡ください。<br>
-          直接のご連絡は <a href="mailto:support@toyaji-art-work.com" class="direct-email-link"><i class="fa-regular fa-envelope"></i> support@toyaji-art-work.com</a> でも受け付けております。
+          直接のご連絡は <a href="mailto:support@toyaji-art-work.com" id="directEmailLink" class="direct-email-link"><i class="fa-regular fa-envelope"></i> <span id="directEmailText">support@toyaji-art-work.com</span></a> でも受け付けております。
         </p>
         <div class="direct-email-box">
-          <span class="email-address"><i class="fa-solid fa-paper-plane"></i> support@toyaji-art-work.com</span>
+          <span class="email-address"><i class="fa-solid fa-paper-plane"></i> <span id="directEmailBoxText">support@toyaji-art-work.com</span></span>
           <button type="button" class="btn-copy-email" id="copyEmailBtn" title="メールアドレスをコピー">
             <i class="fa-regular fa-copy"></i> アドレスをコピー
           </button>
@@ -306,6 +306,7 @@
       </div>
 
       <div class="contact-card">
+        <div id="contactAlertContainer"></div>
         <form id="contactForm" class="contact-form">
           <div class="form-row">
             <div class="form-group">
@@ -411,11 +412,27 @@
     <div class="modal-content manager-modal">
       <button class="modal-close" id="closeManagerModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
       <div class="modal-header">
-        <h2><i class="fa-solid fa-cloud-arrow-up"></i> 作品追加・更新ツール (toyaji専用)</h2>
-        <p>画像をアップロード、または画像URLを入力して作品を登録できます。追加した作品はサイトに即時反映されます。</p>
+        <h2><i class="fa-solid fa-sliders"></i> 作品管理 ＆ Webサイト設定 (toyaji ART WORK)</h2>
+        <p>新規作品の追加・編集、お問い合わせ受信メールアドレスの設定を行えます。</p>
       </div>
 
       <div class="modal-body manager-modal-body">
+        <!-- Target Email Settings Box -->
+        <div class="manager-settings-box" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 24px;">
+          <h4 style="margin-bottom: 8px; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-envelope-circle-check"></i> お問い合わせ受信用メールアドレスの設定
+          </h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+            お問い合わせフォームから送信されたメッセージが届く宛先メールアドレスを設定・保存できます。
+          </p>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input type="email" id="targetEmailInput" placeholder="例: your-mailbox@gmail.com" style="flex: 1; min-width: 240px; padding: 8px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-main); font-size: 0.9rem;">
+            <button type="button" id="saveEmailConfigBtn" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.85rem;">
+              <i class="fa-solid fa-floppy-disk"></i> メールアドレスを保存
+            </button>
+          </div>
+        </div>
+
         <form id="addWorkForm" class="add-work-form">
           
           <!-- Image Input (File or URL) -->

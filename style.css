@@ -1232,6 +1232,39 @@ a {
   box-shadow: var(--shadow-md);
 }
 
+/* Contact Form Alert Banners */
+.contact-alert {
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  animation: fadeIn 0.3s ease;
+}
+
+.contact-alert-success {
+  background-color: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #059669;
+}
+
+[data-theme="dark"] .contact-alert-success {
+  color: #34D399;
+}
+
+.contact-alert-error {
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #DC2626;
+}
+
+[data-theme="dark"] .contact-alert-error {
+  color: #F87171;
+}
+
 .contact-form {
   display: flex;
   flex-direction: column;

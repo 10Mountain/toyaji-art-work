@@ -14,6 +14,8 @@ IMAGES_DIR = os.path.join(BASE_DIR, 'images')
 os.makedirs(os.path.join(BASE_DIR, 'data'), exist_ok=True)
 os.makedirs(IMAGES_DIR, exist_ok=True)
 
+INQUIRIES_JSON_PATH = os.path.join(BASE_DIR, 'data', 'inquiries.json')
+
 def clean_year(val):
     if not val:
         return 0
@@ -41,6 +43,16 @@ class ToyajiPortfolioHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             works = self.load_works()
             self.wfile.write(json.dumps(works, ensure_ascii=False).encode('utf-8'))
+            return
+
+        # API endpoint to get inquiries
+        if self.path == '/api/inquiries':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            inquiries = self.load_inquiries()
+            self.wfile.write(json.dumps(inquiries, ensure_ascii=False).encode('utf-8'))
             return
         
         return super().do_GET()
@@ -114,6 +126,32 @@ class ToyajiPortfolioHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
             return
 
+        # Contact form submission endpoint
+        if self.path == '/api/contact':
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                data['id'] = f"inquiry-{int(uuid.uuid4().int % 1000000)}"
+                import datetime
+                data['created_at'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+                inquiries = self.load_inquiries()
+                inquiries.insert(0, data)
+                self.save_inquiries(inquiries)
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success", "message": "Inquiry recorded locally", "inquiry": data}, ensure_ascii=False).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
+            return
+
         return super().do_POST()
 
     def do_DELETE(self):
@@ -165,6 +203,19 @@ class ToyajiPortfolioHandler(SimpleHTTPRequestHandler):
         works = clean_works(works)
         with open(WORKS_JSON_PATH, 'w', encoding='utf-8') as f:
             json.dump(works, f, ensure_ascii=False, indent=2)
+
+    def load_inquiries(self):
+        if os.path.exists(INQUIRIES_JSON_PATH):
+            try:
+                with open(INQUIRIES_JSON_PATH, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"Error loading inquiries.json: {e}")
+        return []
+
+    def save_inquiries(self, inquiries):
+        with open(INQUIRIES_JSON_PATH, 'w', encoding='utf-8') as f:
+            json.dump(inquiries, f, ensure_ascii=False, indent=2)
 
 if __name__ == '__main__':
     print(f"Serving toyaji ART WORK with API at http://localhost:{PORT}")

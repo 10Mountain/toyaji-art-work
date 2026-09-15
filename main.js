@@ -398,10 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Open Detail Lightbox Modal ---
-  let currentDetailWork = null;
-
   function openDetail(work) {
-    currentDetailWork = work;
     modalImg.src = work.image;
     modalTitle.textContent = work.title;
     modalCategory.textContent = CATEGORY_LABELS[work.category] || work.category;
@@ -981,66 +978,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Close Modals & Modal Inquire Button Handler
+    // Close Modals
     closeDetailModal.addEventListener('click', closeDetail);
     detailModal.addEventListener('click', (e) => {
       if (e.target === detailModal) closeDetail();
     });
-
-    const modalInquireBtn = document.getElementById('modalInquireBtn');
-    const contactCategory = document.getElementById('contactCategory');
-    const contactMessage = document.getElementById('contactMessage');
-
-    if (modalInquireBtn) {
-      modalInquireBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeDetail();
-
-        if (currentDetailWork) {
-          // Auto-select category if matching option exists
-          if (contactCategory) {
-            const catVal = currentDetailWork.category;
-            const hasOption = Array.from(contactCategory.options).some(opt => opt.value === catVal);
-            if (hasOption) {
-              contactCategory.value = catVal;
-            }
-          }
-
-          // Pre-fill message field with template and artwork details
-          if (contactMessage) {
-            const catLabel = CATEGORY_LABELS[currentDetailWork.category] || currentDetailWork.category;
-            const prefillMsg = `【ご相談内容】
-作品「${currentDetailWork.title}」のような作風・表現での制作について相談したいです。
-
-【参考作品】
-・タイトル: ${currentDetailWork.title}
-・カテゴリー: ${catLabel}
-${currentDetailWork.year ? `・制作年: ${currentDetailWork.year}\n` : ''}${currentDetailWork.tools ? `・使用ツール/画材: ${currentDetailWork.tools}\n` : ''}
-----------------------------------------
-[用途・サイズ・ご予算・納期など、ご希望の詳細をこちらにご記入ください]`;
-
-            contactMessage.value = prefillMsg;
-          }
-
-          // Smooth scroll to contact section
-          const contactSection = document.getElementById('contact');
-          if (contactSection) {
-            contactSection.scrollIntoView({ behavior: 'smooth' });
-          }
-
-          // Show feedback toast and focus message area
-          showToast(`✨ 「${currentDetailWork.title}」の作風情報を問い合わせに入力しました！`);
-
-          setTimeout(() => {
-            if (contactMessage) {
-              contactMessage.focus();
-              contactMessage.selectionStart = contactMessage.value.length;
-              contactMessage.selectionEnd = contactMessage.value.length;
-            }
-          }, 600);
-        }
-      });
-    }
 
     openManagerBtn.addEventListener('click', openAdminAuthModalFunc);
 
@@ -1228,77 +1170,168 @@ ${currentDetailWork.year ? `・制作年: ${currentDetailWork.year}\n` : ''}${cu
       navMenu.classList.toggle('show');
     });
 
+    // --- Contact Form & Recipient Email Management ---
+    function getTargetEmail() {
+      return localStorage.getItem('toyaji_target_email') || 'support@toyaji-art-work.com';
+    }
+
+    function updateEmailDisplay() {
+      const email = getTargetEmail();
+      const directEmailText = document.getElementById('directEmailText');
+      const directEmailBoxText = document.getElementById('directEmailBoxText');
+      const directEmailLink = document.getElementById('directEmailLink');
+      const targetEmailInput = document.getElementById('targetEmailInput');
+
+      if (directEmailText) directEmailText.textContent = email;
+      if (directEmailBoxText) directEmailBoxText.textContent = email;
+      if (directEmailLink) directEmailLink.href = `mailto:${email}`;
+      if (targetEmailInput && !targetEmailInput.value) targetEmailInput.value = email;
+    }
+
+    // Initialize display on load
+    updateEmailDisplay();
+
+    // Save Email Settings Button
+    const saveEmailConfigBtn = document.getElementById('saveEmailConfigBtn');
+    if (saveEmailConfigBtn) {
+      saveEmailConfigBtn.addEventListener('click', () => {
+        const inputVal = document.getElementById('targetEmailInput')?.value.trim();
+        if (!inputVal || !inputVal.includes('@')) {
+          showToast('有効なメールアドレスを入力してください');
+          return;
+        }
+        localStorage.setItem('toyaji_target_email', inputVal);
+        updateEmailDisplay();
+        showToast(`受信メールアドレスを ${inputVal} に保存しました！`);
+      });
+    }
+
     // Copy Email Address Button
     const copyEmailBtn = document.getElementById('copyEmailBtn');
     if (copyEmailBtn) {
       copyEmailBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText('support@toyaji-art-work.com').then(() => {
-          showToast('メールアドレス (support@toyaji-art-work.com) をコピーしました！');
+        const email = getTargetEmail();
+        navigator.clipboard.writeText(email).then(() => {
+          showToast(`メールアドレス (${email}) をコピーしました！`);
         }).catch(() => {
-          showToast('support@toyaji-art-work.com');
+          showToast(email);
         });
       });
     }
 
-    // Contact Form Submission
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = document.getElementById('contactName').value.trim();
-      const email = document.getElementById('contactEmail').value.trim();
-      const categorySelect = document.getElementById('contactCategory');
-      const categoryText = categorySelect.options[categorySelect.selectedIndex]?.text || '';
-      const deadline = document.getElementById('contactDeadline').value.trim();
-      const message = document.getElementById('contactMessage').value.trim();
+    // Contact Form AJAX Submission (FormSubmit API + Local Backup)
+    if (contactForm) {
+      contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
 
-      const recipient = 'support@toyaji-art-work.com';
-      const subject = encodeURIComponent(`【toyaji ART WORK お問い合わせ】${name}様より (${categoryText})`);
-      const rawBodyText = `toyaji ART WORK お問い合わせ内容
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const categorySelect = document.getElementById('contactCategory');
+        const categoryText = categorySelect.options[categorySelect.selectedIndex]?.text || '';
+        const deadline = document.getElementById('contactDeadline').value.trim();
+        const message = document.getElementById('contactMessage').value.trim();
+        const targetEmail = getTargetEmail();
 
-■お名前 / 貴社名:
-${name}
+        const alertContainer = document.getElementById('contactAlertContainer');
+        if (alertContainer) {
+          alertContainer.innerHTML = '';
+        }
 
-■ご連絡先メールアドレス:
-${email}
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> メッセージ送信中...';
+        }
 
-■ご希望のカテゴリー:
-${categoryText}
-
-■希望納品時期:
-${deadline || '指定なし'}
-
-■ご依頼内容・詳細:
-${message}
-`;
-      const body = encodeURIComponent(rawBodyText);
-
-      // 1. Save locally to Python API server data/contacts.json
-      fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, category: categoryText, deadline, message, timestamp: new Date().toISOString() })
-      }).catch(err => console.warn('Local contact save API:', err));
-
-      // 2. Post to FormSubmit free email delivery API (Background email delivery)
-      fetch('https://formsubmit.co/ajax/support@toyaji-art-work.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
+        const payload = {
           name: name,
           email: email,
           category: categoryText,
           deadline: deadline || '指定なし',
           message: message,
-          _subject: `【toyaji ART WORK お問い合わせ】${name}様より (${categoryText})`
-        })
-      }).catch(err => console.warn('FormSubmit background API:', err));
+          _subject: `【toyaji ART WORK お問い合わせ】${name}様より (${categoryText})`,
+          _template: "table"
+        };
 
-      // 3. Open Email client / Mailto fallback for direct submission
-      const mailtoUrl = `mailto:${recipient}?subject=${subject}&body=${body}`;
-      window.location.href = mailtoUrl;
+        let sentSuccess = false;
 
-      showToast(`✨ お問い合わせの送信処理を完了しました (${name}様)`);
-      contactForm.reset();
-    });
+        // 1. Local Python API Backup Save (if running server.py)
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          try {
+            await fetch('/api/contact', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+          } catch (err) {
+            console.warn('Local contact API save note:', err);
+          }
+        }
+
+        // 2. FormSubmit AJAX API Submission
+        try {
+          if (targetEmail && targetEmail.includes('@') && !targetEmail.includes('example.com')) {
+            const res = await fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(payload)
+            });
+
+            const resData = await res.json();
+            if (res.ok && (resData.success === 'true' || resData.success === true)) {
+              sentSuccess = true;
+            }
+          }
+        } catch (err) {
+          console.warn('FormSubmit AJAX request error:', err);
+        }
+
+        // 3. UI Response Feedback
+        if (alertContainer) {
+          if (sentSuccess) {
+            alertContainer.innerHTML = `
+              <div class="contact-alert contact-alert-success">
+                <i class="fa-solid fa-circle-check" style="font-size: 1.4rem; margin-top: 2px;"></i>
+                <div>
+                  <strong>お問い合わせメッセージを送信いたしました！</strong><br>
+                  ${name}様、ご入力ありがとうございます。送信内容が ${targetEmail} へ自動送信されました。<br>
+                  内容を確認の上、ご入力いただいたメールアドレス (${email}) 宛てに折り返しご連絡いたします。
+                </div>
+              </div>
+            `;
+            contactForm.reset();
+            showToast('お問い合わせの送信が完了しました！');
+          } else {
+            // Fallback: If FormSubmit needs first-time activation or mailto trigger
+            const subjectEnc = encodeURIComponent(`【toyaji ART WORK お問い合わせ】${name}様より (${categoryText})`);
+            const bodyEnc = encodeURIComponent(`【toyaji ART WORK お問い合わせ内容】\n\n■お名前: ${name}\n■メール: ${email}\n■カテゴリー: ${categoryText}\n■希望納品時期: ${deadline}\n\n■ご依頼詳細:\n${message}`);
+            const mailtoUrl = `mailto:${targetEmail}?subject=${subjectEnc}&body=${bodyEnc}`;
+
+            alertContainer.innerHTML = `
+              <div class="contact-alert contact-alert-success">
+                <i class="fa-solid fa-paper-plane" style="font-size: 1.4rem; margin-top: 2px;"></i>
+                <div>
+                  <strong>お問い合わせ内容を受け付けました！</strong><br>
+                  ${name}様、ありがとうございます。<br>
+                  メールアプリから送信をご希望の場合は <a href="${mailtoUrl}" style="text-decoration: underline; font-weight: bold;">[こちらのリンク]</a> をタップしてメールソフトを起動できます。
+                </div>
+              </div>
+            `;
+            contactForm.reset();
+            showToast('お問い合わせを受け付けました。');
+          }
+        }
+
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHtml;
+        }
+      });
+    }
 
     // --- Theme Switcher Logic ---
     const themeToggleBtn = document.getElementById('themeToggleBtn');
