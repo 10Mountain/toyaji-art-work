@@ -398,7 +398,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Open Detail Lightbox Modal ---
+  let currentDetailWork = null;
+
   function openDetail(work) {
+    currentDetailWork = work;
     modalImg.src = work.image;
     modalTitle.textContent = work.title;
     modalCategory.textContent = CATEGORY_LABELS[work.category] || work.category;
@@ -978,11 +981,66 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Close Modals
+    // Close Modals & Modal Inquire Button Handler
     closeDetailModal.addEventListener('click', closeDetail);
     detailModal.addEventListener('click', (e) => {
       if (e.target === detailModal) closeDetail();
     });
+
+    const modalInquireBtn = document.getElementById('modalInquireBtn');
+    const contactCategory = document.getElementById('contactCategory');
+    const contactMessage = document.getElementById('contactMessage');
+
+    if (modalInquireBtn) {
+      modalInquireBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeDetail();
+
+        if (currentDetailWork) {
+          // Auto-select category if matching option exists
+          if (contactCategory) {
+            const catVal = currentDetailWork.category;
+            const hasOption = Array.from(contactCategory.options).some(opt => opt.value === catVal);
+            if (hasOption) {
+              contactCategory.value = catVal;
+            }
+          }
+
+          // Pre-fill message field with template and artwork details
+          if (contactMessage) {
+            const catLabel = CATEGORY_LABELS[currentDetailWork.category] || currentDetailWork.category;
+            const prefillMsg = `【ご相談内容】
+作品「${currentDetailWork.title}」のような作風・表現での制作について相談したいです。
+
+【参考作品】
+・タイトル: ${currentDetailWork.title}
+・カテゴリー: ${catLabel}
+${currentDetailWork.year ? `・制作年: ${currentDetailWork.year}\n` : ''}${currentDetailWork.tools ? `・使用ツール/画材: ${currentDetailWork.tools}\n` : ''}
+----------------------------------------
+[用途・サイズ・ご予算・納期など、ご希望の詳細をこちらにご記入ください]`;
+
+            contactMessage.value = prefillMsg;
+          }
+
+          // Smooth scroll to contact section
+          const contactSection = document.getElementById('contact');
+          if (contactSection) {
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+          }
+
+          // Show feedback toast and focus message area
+          showToast(`✨ 「${currentDetailWork.title}」の作風情報を問い合わせに入力しました！`);
+
+          setTimeout(() => {
+            if (contactMessage) {
+              contactMessage.focus();
+              contactMessage.selectionStart = contactMessage.value.length;
+              contactMessage.selectionEnd = contactMessage.value.length;
+            }
+          }, 600);
+        }
+      });
+    }
 
     openManagerBtn.addEventListener('click', openAdminAuthModalFunc);
 
