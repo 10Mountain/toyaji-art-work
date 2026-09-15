@@ -1240,20 +1240,19 @@ ${currentDetailWork.year ? `・制作年: ${currentDetailWork.year}\n` : ''}${cu
       });
     }
 
-    // Contact Form Submission (Mailto redirect to support@toyaji-art-work.com)
+    // Contact Form Submission
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const name = document.getElementById('contactName').value;
-      const email = document.getElementById('contactEmail').value;
+      const name = document.getElementById('contactName').value.trim();
+      const email = document.getElementById('contactEmail').value.trim();
       const categorySelect = document.getElementById('contactCategory');
       const categoryText = categorySelect.options[categorySelect.selectedIndex]?.text || '';
-      const deadline = document.getElementById('contactDeadline').value;
-      const message = document.getElementById('contactMessage').value;
+      const deadline = document.getElementById('contactDeadline').value.trim();
+      const message = document.getElementById('contactMessage').value.trim();
 
       const recipient = 'support@toyaji-art-work.com';
       const subject = encodeURIComponent(`【toyaji ART WORK お問い合わせ】${name}様より (${categoryText})`);
-      const body = encodeURIComponent(
-`toyaji ART WORK お問い合わせ内容
+      const rawBodyText = `toyaji ART WORK お問い合わせ内容
 
 ■お名前 / 貴社名:
 ${name}
@@ -1269,13 +1268,35 @@ ${deadline || '指定なし'}
 
 ■ご依頼内容・詳細:
 ${message}
-`
-      );
+`;
+      const body = encodeURIComponent(rawBodyText);
 
-      // Open email client
-      window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+      // 1. Save locally to Python API server data/contacts.json
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, category: categoryText, deadline, message, timestamp: new Date().toISOString() })
+      }).catch(err => console.warn('Local contact save API:', err));
 
-      showToast(`メールソフトを起動しました (${name}様)。そのまま送信してください。`);
+      // 2. Post to FormSubmit free email delivery API (Background email delivery)
+      fetch('https://formsubmit.co/ajax/support@toyaji-art-work.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          category: categoryText,
+          deadline: deadline || '指定なし',
+          message: message,
+          _subject: `【toyaji ART WORK お問い合わせ】${name}様より (${categoryText})`
+        })
+      }).catch(err => console.warn('FormSubmit background API:', err));
+
+      // 3. Open Email client / Mailto fallback for direct submission
+      const mailtoUrl = `mailto:${recipient}?subject=${subject}&body=${body}`;
+      window.location.href = mailtoUrl;
+
+      showToast(`✨ お問い合わせの送信処理を完了しました (${name}様)`);
       contactForm.reset();
     });
 
