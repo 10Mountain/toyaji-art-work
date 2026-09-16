@@ -398,7 +398,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Open Detail Lightbox Modal ---
+  let activeDetailWork = null;
+
   function openDetail(work) {
+    activeDetailWork = work;
     modalImg.src = work.image;
     modalTitle.textContent = work.title;
     modalCategory.textContent = CATEGORY_LABELS[work.category] || work.category;
@@ -984,6 +987,49 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target === detailModal) closeDetail();
     });
 
+    // "Inquire with this art style" Button Handler
+    const modalInquireBtn = document.getElementById('modalInquireBtn');
+    if (modalInquireBtn) {
+      modalInquireBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeDetail();
+
+        if (activeDetailWork) {
+          // 1. Auto-select category in contact form select dropdown
+          const contactCategory = document.getElementById('contactCategory');
+          if (contactCategory && activeDetailWork.category) {
+            const matchOption = Array.from(contactCategory.options).find(opt => opt.value === activeDetailWork.category);
+            if (matchOption) {
+              contactCategory.value = activeDetailWork.category;
+            }
+          }
+
+          // 2. Pre-fill inquiry details message
+          const contactMessage = document.getElementById('contactMessage');
+          if (contactMessage) {
+            const catLabel = CATEGORY_LABELS[activeDetailWork.category] || activeDetailWork.category;
+            contactMessage.value = `【「${activeDetailWork.title}」の作風での制作依頼・相談】\n・対象作品名: 「${activeDetailWork.title}」\n・希望カテゴリー: ${catLabel}\n・参考制作ツール/画材: ${activeDetailWork.tools || '指定なし'}\n\n【具体的な用途・ご要望・イメージ詳細】\n`;
+          }
+
+          showToast(`「${activeDetailWork.title}」の情報をフォームに反映しました！`);
+        }
+
+        // 3. Smooth scroll down to contact section
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+          contactSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 4. Focus cursor into contact message field after scroll
+        setTimeout(() => {
+          const contactMessage = document.getElementById('contactMessage');
+          if (contactMessage) {
+            contactMessage.focus();
+          }
+        }, 400);
+      });
+    }
+
     openManagerBtn.addEventListener('click', openAdminAuthModalFunc);
 
     if (emptyUploadBtn) {
@@ -1172,7 +1218,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Contact Form & Recipient Email Management ---
     function getTargetEmail() {
-      return localStorage.getItem('toyaji_target_email') || '10mountain.toyaji@gmail.com';
+      const saved = localStorage.getItem('toyaji_target_email');
+      if (saved && saved !== 'support@toyaji-art-work.com') {
+        return saved;
+      }
+      // Reset old dummy email if previously saved in browser localStorage
+      localStorage.setItem('toyaji_target_email', '10mountain.toyaji@gmail.com');
+      return '10mountain.toyaji@gmail.com';
     }
 
     function updateEmailDisplay() {
@@ -1185,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (directEmailText) directEmailText.textContent = email;
       if (directEmailBoxText) directEmailBoxText.textContent = email;
       if (directEmailLink) directEmailLink.href = `mailto:${email}`;
-      if (targetEmailInput && !targetEmailInput.value) targetEmailInput.value = email;
+      if (targetEmailInput) targetEmailInput.value = email;
     }
 
     // Initialize display on load
