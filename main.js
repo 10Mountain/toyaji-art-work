@@ -1172,7 +1172,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Contact Form & Recipient Email Management ---
     function getTargetEmail() {
-      return localStorage.getItem('toyaji_target_email') || 'support@toyaji-art-work.com';
+      return localStorage.getItem('toyaji_target_email') || '10mountain.toyaji@gmail.com';
     }
 
     function updateEmailDisplay() {
